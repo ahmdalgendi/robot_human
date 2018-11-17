@@ -10,12 +10,20 @@
 GLuint texture_id[MAX_NO_TEXTURES];
 
 bool head_right_done , head_left_done, rot_head_flag;
+float head_rotate = 0, head_rotval=-1.2 ;
 
+bool   rightHand_up_done ,  rightHand_flag,
+       rightElbow_up_done , rightElbow_done,
+       leftHand_up_done, leftHand_flag,
+       leftElbow_up_done, leftElbow_flag,
+       rightLeg_up_done , rightLeg_flag,
+       rightKnee_up_done, rightKnee_flag,
+       leftLeg_up_done , leftLeg_flag,
+       leftKnee_up_done, leftKnee_flag ;
 float angle = 45, fAspect, angx = 0, angy = 0, angz = 0,
      moveZ = -5.0, eyeZ = 0.0, eyeX = 0.0,
       eyeY = 0.0,  moveX = 0.0, tamTela = 400.0, eye_centerX = 0.0, eye_centerY = 0.0,
       eye_centerZ = 0.0;
-float head_rotate = 0, head_rotval=-1.2 ;
 
 
 
