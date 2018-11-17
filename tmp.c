@@ -13,14 +13,14 @@ bool head_right_done , head_left_done, rot_head_flag;
 float rot_speed= 2;
 float head_ang = 0, head_rotval ;
 
-bool   rightHand_up_done ,  rightHand_flag,
-       rightElbow_up_done , rightElbow_done,
-       leftHand_up_done, leftHand_flag,
-       leftElbow_up_done, leftElbow_flag,
-       rightLeg_up_done , rightLeg_flag,
-       rightKnee_up_done, rightKnee_flag,
-       leftLeg_up_done , leftLeg_flag,
-       leftKnee_up_done, leftKnee_flag ;
+bool   rightHand_up_done = 0 ,  rightHand_flag = 0,
+       rightElbow_up_done=0 , rightElbow_flag=0,
+       leftHand_up_done=0, leftHand_flag=0,
+       leftElbow_up_done=0, leftElbow_flag=0,
+       rightLeg_up_done =0, rightLeg_flag=0,
+       rightKnee_up_done=0, rightKnee_flag=0,
+       leftLeg_up_done =0, leftLeg_flag=0,
+       leftKnee_up_done=0, leftKnee_flag =0;
 
 float leftHand_ang , leftElbow_ang , rightHand_ang , rightElbow_ang, rightLeg_ang,
       rightKnee_ang , leftLeg_ang  ,  leftKnee_ang ;
@@ -457,7 +457,7 @@ void my_man() {
             glPopMatrix();
             glPushMatrix();
                 glTranslatef(0.39, -0.56, 0.0);
-                glRotatef(0, 1.0, 0.0, 0.0);
+                glRotatef(rightElbow_ang, 1.0, 0.0, 0.0);
                 glRotatef(0, 0.0, 0.0, 1.0);
                 glRotatef(-10, 0.0, 0.0, 1.0);
                 glTranslatef(-0.39, 0.56, 0.0);
@@ -466,7 +466,7 @@ void my_man() {
                         glTranslatef(0.45, -0.65, 0.0);
                         glRotatef(45, 0.0, 0.0, 1.0);
                         glScalef(0.5, 1.3, 0.8);
-                        glRotatef( rightElbow_ang+ 90, 1.0, 0.0, 0.0);
+                        glRotatef(  90, 1.0, 0.0, 0.0);
                         glutSolidCube(0.1 );
                         glColor3f(1,1,1);
                     glPopMatrix();
@@ -598,9 +598,46 @@ void  rightHand_moving()
             rightHand_rotVal*=-1 , rightHand_up_done = 1;
         if(abs(rightHand_ang - 0)<=1 && rightHand_up_done)
             rightHand_up_done = 0, rightHand_ang = 0 ,rightHand_flag =0 , rightHand_rotVal *=-1;
-        printf("%d\n", rightHand_up_done);
     }
 }
+
+void  rightElbow_moving()
+{
+    if(rightElbow_flag)
+    {
+        rightElbow_ang+= rightElbow_rotVal;
+        if(rightElbow_ang >= 80 || rightElbow_ang <= -80)
+            rightElbow_rotVal*=-1 , rightElbow_up_done = 1;
+        if(abs(rightElbow_ang - 0)<=1 && rightElbow_up_done)
+            rightElbow_up_done = 0, rightElbow_ang = 0 ,rightElbow_flag =0 , rightElbow_rotVal *=-1;
+    }
+}
+
+
+void  leftHand_moving()
+{
+    if(leftHand_flag)
+    {
+        leftHand_ang+= leftHand_rotVal;
+        if(leftHand_ang >= 60 || leftHand_ang <= -60)
+            leftHand_rotVal*=-1 , leftHand_up_done = 1;
+        if(abs(leftHand_ang - 0)<=1 && leftHand_up_done)
+            leftHand_up_done = 0, leftHand_ang = 0 ,leftHand_flag =0 , leftHand_rotVal *=-1;
+    }
+}
+
+void  leftElbow_moving()
+{
+    if(leftElbow_flag)
+    {
+        leftElbow_ang+= leftElbow_rotVal;
+        if(leftElbow_ang >= 80 || leftElbow_ang <= -80)
+            leftElbow_rotVal*=-1 , leftElbow_up_done = 1;
+        if(abs(leftElbow_ang - 0)<=1 && leftElbow_up_done)
+            leftElbow_up_done = 0, leftElbow_ang = 0 ,leftElbow_flag =0 , leftElbow_rotVal *=-1;
+    }
+}
+
 
 
 
@@ -616,8 +653,47 @@ void playGame(void)	{
        my_man();
        head_rotate_();
        rightHand_moving();
+       rightElbow_moving();
     glPopMatrix();
     glutSwapBuffers();
+}
+
+
+void menuFunc(GLint test)
+{
+    switch(test){
+        case 1:
+            exit(0);
+        break ;
+        case 2:
+            rightHand_flag = 1;
+        break;
+        case 3:
+            leftHand_flag=1;
+            break;
+        case 4 :
+            leftElbow_flag=1;
+            break;
+        case 5 :
+            rightElbow_flag = 1;
+            break;
+        case 6:
+            leftLeg_flag = 1;
+            break;
+        case 7:
+            rightLeg_flag = 1;
+            break;
+        case 8:
+            leftKnee_flag = 1;
+            break;
+        case 9:
+            rightKnee_flag =1;
+            break;
+        case 10:
+            rot_head_flag = 1;
+            break;
+    }
+
 }
 
 void keyboard (unsigned char key, int x, int y){
@@ -639,8 +715,7 @@ void keyboard (unsigned char key, int x, int y){
         rot_head_flag = 1, rightHand_flag = 1;
         break;
     case 'z':
-        head_ang+=.8;
-        head_ang  = head_ang > 90 ? 90 : head_ang;
+        rightElbow_flag = 1;
         break;
     case'x' :
         head_ang -= .8;
@@ -716,6 +791,19 @@ int  main ( int argc, char** argv ){
 	init();
 	glutDisplayFunc(playGame);
     glutKeyboardFunc(keyboard);
+    glutCreateMenu(menuFunc);
+        glutAddMenuEntry("finish", 1);
+        glutAddMenuEntry("Rotate Right Arm", 2);
+        glutAddMenuEntry("Rotate left Arm", 3) ;
+        glutAddMenuEntry("Rotate Left Elbow", 4);
+        glutAddMenuEntry("Rotating Right Elbow", 5);
+        glutAddMenuEntry("Rotate Left Leg", 6);
+        glutAddMenuEntry("Rotate right Leg", 7);
+        glutAddMenuEntry("Rotate Left Knee", 8);
+        glutAddMenuEntry("Rotate right Knee", 9);
+        glutAddMenuEntry("Rotate head", 10);
+
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
     glutTimerFunc(0,Timer,10);
 	glutMainLoop();
 
