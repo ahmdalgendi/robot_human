@@ -249,5 +249,12 @@
 	<GL/glu.h>
 	<GL/glut.h>
 
-1542488337 source:d:\acm\new_glut\tmp.c
+1542488944 source:d:\acm\new_glut\tmp.c
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<GL/glut.h>
+	<stdbool.h>
+	<math.h>
+	<time.h>
 
