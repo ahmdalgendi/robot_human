@@ -173,7 +173,7 @@ void init(void) {
 glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
 
     leftHand_rotVal= rot_speed, leftElbow_rotVal= rot_speed, rightHand_rotVal= rot_speed, rightElbow_rotVal=rot_speed, rightLeg_rotVal=rot_speed,
-    rightKnee_rotVal= rot_speed, leftLeg_rotVal = rot_speed,  leftKnee_rotVal =rot_speed , head_rotval = rot_speed;
+    rightKnee_rotVal= - rot_speed, leftLeg_rotVal = rot_speed,  leftKnee_rotVal = -rot_speed , head_rotval = rot_speed;
 
     glLoadIdentity();
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
@@ -408,7 +408,7 @@ void my_man() {
             glPopMatrix();
             glPushMatrix();
                 glTranslatef(-0.39, -0.56, 0.0);
-                glRotatef(0, 1.0, 0.0, 0.0);
+                glRotatef(leftElbow_ang, 1.0, 0.0, 0.0);
                 glRotatef(0, 0.0, 0.0, 1.0);
                 glRotatef(10, 0.0, 0.0, 1.0);
                 glTranslatef(0.39, 0.56, 0.0);
@@ -423,7 +423,7 @@ void my_man() {
                 glPopMatrix();
                 glPushMatrix(); ///left lower arm
                     glTranslatef(-0.52, -0.72, 0.0);
-                    glRotatef(leftElbow_ang, 1.0, 0.0, 0.0);
+                    glRotatef(0, 1.0, 0.0, 0.0);
                     glRotatef(0, 0.0, 0.0, 1.0);
                     glTranslatef(0.52, 0.72, 0.0);
                     glPushMatrix(); ///left hand
@@ -506,7 +506,7 @@ void my_man() {
             glPopMatrix();
             glPushMatrix();
                 glTranslatef(-0.03, -1.35, 0.0);
-                glRotatef(0, 1.0, 0.0, 0.0);
+                glRotatef(leftKnee_ang, 1.0, 0.0, 0.0);
                 glRotatef(0, 0.0, 0.0, 1.0);
                 glTranslatef(0.03, 1.35, 0.0);
                 glPushMatrix(); ///left lower leg
@@ -514,7 +514,7 @@ void my_man() {
 
                     glTranslatef(-0.1, -1.45, 0.0);
                     glScalef(0.5, 1.3, 1.0);
-                    glRotatef( leftKnee_ang+ 90, 1.0, 0.0, 0.0);
+                    glRotatef(  90, 1.0, 0.0, 0.0);
                     glutSolidCube(0.1 );
                     glColor3f(1,1,1);
                 glPopMatrix();
@@ -533,7 +533,7 @@ void my_man() {
             glTranslatef(-0.05, 0.7, 0);
             glScalef(1.6, 1.6, 1.6);
             glTranslatef(0.03, -1.2, 0.0);
-            glRotatef(0, 1.0, 0.0, 0.0);
+            glRotatef(rightLeg_ang, 1.0, 0.0, 0.0);
             glRotatef(0, 0.0, 0.0, 1.0);
             glTranslatef(-0.03, 1.2, 0.0);
             glPushMatrix(); ///right upper leg
@@ -547,7 +547,7 @@ void my_man() {
             glPushMatrix(); ///right lower leg
                 glTranslatef(0.03, -1.35, 0.0);
                 glColor3f(139/255.0, 69/255.0, 19.0/255);
-                glRotatef(0, 1.0, 0.0, 0.0);
+                glRotatef(rightKnee_ang, 1.0, 0.0, 0.0);
                 glRotatef(0, 0.0, 0.0, 1.0);
                 glTranslatef(-0.03, 1.35, 0.0);
                 glPushMatrix();
@@ -638,6 +638,55 @@ void  leftElbow_moving()
     }
 }
 
+void  leftLeg_moving()
+{
+    if(leftLeg_flag)
+    {
+        leftLeg_ang+= leftLeg_rotVal;
+        if(leftLeg_ang >= 80 || leftLeg_ang <= -80)
+            leftLeg_rotVal*=-1 , leftLeg_up_done = 1;
+        if(abs(leftLeg_ang - 0)<=1 && leftLeg_up_done)
+            leftLeg_up_done = 0, leftLeg_ang = 0 ,leftLeg_flag =0 , leftLeg_rotVal *=-1;
+    }
+}
+
+void  leftKnee_moving()
+{
+    if(leftKnee_flag)
+    {
+        leftKnee_ang+= leftKnee_rotVal;
+        if(leftKnee_ang >= 80 || leftKnee_ang <= -80)
+            leftKnee_rotVal*=-1 , leftKnee_up_done = 1;
+        if(abs(leftKnee_ang - 0)<=1 && leftKnee_up_done)
+            leftKnee_up_done = 0, leftKnee_ang = 0 ,leftKnee_flag =0 , leftKnee_rotVal *=-1;
+    }
+}
+
+void  rightLeg_moving()
+{
+    if(rightLeg_flag)
+    {
+        rightLeg_ang+= rightLeg_rotVal;
+        if(rightLeg_ang >= 80 || rightLeg_ang <= -80)
+            rightLeg_rotVal*=-1 , rightLeg_up_done = 1;
+        if(abs(rightLeg_ang - 0)<=1 && rightLeg_up_done)
+            rightLeg_up_done = 0, rightLeg_ang = 0 ,rightLeg_flag =0 , rightLeg_rotVal *=-1;
+    }
+}
+
+void  rightKnee_moving()
+{
+    if(rightKnee_flag)
+    {
+        rightKnee_ang+= rightKnee_rotVal;
+        if(rightKnee_ang >= 80 || rightKnee_ang <= -80)
+            rightKnee_rotVal*=-1 , rightKnee_up_done = 1;
+        if(abs(rightKnee_ang - 0)<=1 && rightKnee_up_done)
+            rightKnee_up_done = 0, rightKnee_ang = 0 ,rightKnee_flag =0 , rightKnee_rotVal *=-1;
+    }
+}
+
+
 void playGame(void)	{
 
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -649,6 +698,12 @@ void playGame(void)	{
        head_rotate_();
        rightHand_moving();
        rightElbow_moving();
+       leftElbow_moving();
+       leftHand_moving();
+       leftLeg_moving();
+       leftKnee_moving();
+       rightLeg_moving();
+       rightKnee_moving();
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -707,7 +762,7 @@ void keyboard (unsigned char key, int x, int y){
     break;
 
     case 'h':
-        rot_head_flag = 1, rightHand_flag = 1;
+        rot_head_flag = 1, leftHand_flag = 1;
         break;
     case 'z':
         rightElbow_flag = 1;
@@ -787,7 +842,7 @@ int  main ( int argc, char** argv ){
 	glutDisplayFunc(playGame);
     glutKeyboardFunc(keyboard);
     glutCreateMenu(menuFunc);
-        glutAddMenuEntry("finish", 1);
+        glutAddMenuEntry("Exit", 1);
         glutAddMenuEntry("Rotate Right Arm", 2);
         glutAddMenuEntry("Rotate left Arm", 3) ;
         glutAddMenuEntry("Rotate Left Elbow", 4);
