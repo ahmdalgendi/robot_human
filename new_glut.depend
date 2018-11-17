@@ -241,7 +241,7 @@
 	<_mingw.h>
 	<stddef.h>
 
-1542484739 source:d:\acm\new_glut\main.c
+1542488635 source:d:\acm\new_glut\main.c
 
 1542400056 source:d:\acm\new_glut\human.c
 
@@ -249,12 +249,5 @@
 	<GL/glu.h>
 	<GL/glut.h>
 
-1542484740 source:d:\acm\new_glut\tmp.c
-	<windows.h>
-	<stdio.h>
-	<stdlib.h>
-	<GL/glut.h>
-	<stdbool.h>
-	<math.h>
-	<time.h>
+1542488337 source:d:\acm\new_glut\tmp.c
 

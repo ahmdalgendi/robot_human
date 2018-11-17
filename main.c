@@ -194,7 +194,7 @@
 //    glEnable(GL_TEXTURE_2D);
 //    glGenTextures(1, &texture_id[id]);
 //
-//    glBindTexture(GL_TEXTURE_2D, texture_id[id]);
+////    glBindTexture(GL_TEXTURE_2D, texture_id[id]);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -217,7 +217,7 @@
 //	glMatrixMode(GL_MODELVIEW);
 //	glLoadIdentity();
 //
-//    glTranslatef(camX, camY, camZ+1.3);
+//    glTranslatef(camX, camY, camZ);
 //	glRotatef(angCamZ, 0.0, 0.0, 1.0);
 //	glRotatef(angCamY, 0.0, 1.0, 0.0);
 //	glRotatef(angCamX, 1.0, 0.0, 0.0);
@@ -319,7 +319,7 @@
 ////            glEnable(GL_TEXTURE_GEN_S);
 //            glEnable(GL_TEXTURE_2D);
 //
-//            glBindTexture(GL_TEXTURE_2D, texture_id[0]);
+//           // glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 //
 //
 //
@@ -584,7 +584,7 @@
 //glPushMatrix(); ///Abre gato
 //
 //        glEnable(GL_TEXTURE_2D);
-//        glBindTexture(GL_TEXTURE_2D, texture_id[6]);
+//       // glBindTexture(GL_TEXTURE_2D, texture_id[6]);
 //
 //        glPushMatrix(); ///Abre Cabeca
 //            glScalef(0.6, 0.6, 0.6);
@@ -666,13 +666,13 @@
 //        glPopMatrix();
 //        glPushMatrix();
 //         glEnable(GL_TEXTURE_2D);
-//         glBindTexture(GL_TEXTURE_2D, texture_id[22]);
+//        // glBindTexture(GL_TEXTURE_2D, texture_id[22]);
 //            glTranslatef(-0.2, -0.6, 1.0);
 //            glScalef(0.4, 0.8, 0.0);
 //            glutSolidCube(1.0);
 //        glPopMatrix();
 //        glEnable(GL_TEXTURE_2D);
-//        glBindTexture(GL_TEXTURE_2D, texture_id[4]);
+////        glBindTexture(GL_TEXTURE_2D, texture_id[4]);
 //        glPushMatrix(); ///T1
 //            glTranslatef(-0.45, 0.0, 0.0);
 //            glRotatef(20, 0.0, 0.0, 1.0);
@@ -688,8 +688,8 @@
 //        glPopMatrix();
 //        glDisable(GL_TEXTURE_2D);
 //        glPushMatrix(); ///Baixo
-//        glEnable(GL_TEXTURE_2D);
-//        glBindTexture(GL_TEXTURE_2D, texture_id[10]);
+//      glEnable(GL_TEXTURE_2D);
+//    //    glBindTexture(GL_TEXTURE_2D, texture_id[10]);
 //            glTranslatef(0.0, -0.5, 0.0);
 //            glScalef(1.0, 1.0, 2.0);
 //            glutSolidCube(1.0);
@@ -707,7 +707,7 @@
 //
 //void cesta() {
 //    glEnable(GL_TEXTURE_2D);
-//    glBindTexture(GL_TEXTURE_2D, texture_id[17]);
+////    glBindTexture(GL_TEXTURE_2D, texture_id[17]);
 //    glPushMatrix();
 //        glScalef(0.5, 0.5, 0.5);
 //        glRotatef(90, 1.0, 0.0, 0.0);
@@ -721,14 +721,14 @@
 //
 //    glPushMatrix();
 //        glEnable(GL_TEXTURE_2D);
-//        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
+////        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 //        glTranslatef(-3.0, 1.0, -30);
 //        glScalef(5.0, 5.0, 1.0);
 //        glutSolidCube(1.0);
 //        glDisable(GL_TEXTURE_2D);
 //    glPopMatrix();
 //    glEnable(GL_TEXTURE_2D);
-//    glBindTexture(GL_TEXTURE_2D, texture_id[21]);
+////    glBindTexture(GL_TEXTURE_2D, texture_id[21]);
 //    glPushMatrix();
 //        glTranslatef(4.7, -2.0, -5.0);
 //        glScalef(50.0, 0.1, 100.0);
@@ -1281,31 +1281,6 @@
 //	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH  | GLUT_RGBA);
 //	glutInitWindowSize(800,800);
 //	glutCreateWindow("Cat Lady");
-//    CarregaTextura("D:\\ACM\\new_glut\\head.bmp", 0);
-//	CarregaTextura("D:\\ACM\\new_glut\\calcada2.bmp", 1);
-//    CarregaTextura("D:\\ACM\\new_glut\\lightpole.bmp", 2);
-//    CarregaTextura("D:\\ACM\\new_glut\\roof2.bmp", 3);
-//    CarregaTextura("D:\\ACM\\new_glut\\roof1.bmp", 4);
-//    CarregaTextura("D:\\ACM\\new_glut\\building1.bmp", 5);
-//    CarregaTextura("D:\\ACM\\new_glut\\cat1.bmp", 6);
-//    CarregaTextura("D:\\ACM\\new_glut\\cat2.bmp", 7);
-//    CarregaTextura("D:\\ACM\\new_glut\\cat4.bmp", 8);
-//    CarregaTextura("D:\\ACM\\new_glut\\wall1.bmp", 9);
-//    CarregaTextura("D:\\ACM\\new_glut\\wall2.bmp", 10);
-//    CarregaTextura("D:\\ACM\\new_glut\\wall3.bmp", 11);
-//    CarregaTextura("D:\\ACM\\new_glut\\wall4.bmp", 12);
-//	CarregaTextura("D:\\ACM\\new_glut\\wall5.bmp", 13);
-//	CarregaTextura("D:\\ACM\\new_glut\\shoes.bmp", 14);
-//	CarregaTextura("D:\\ACM\\new_glut\\shirt.bmp", 15);
-//	CarregaTextura("D:\\ACM\\new_glut\\skin.bmp", 16);
-//	CarregaTextura("D:\\ACM\\new_glut\\palha.bmp", 17);
-//	CarregaTextura("D:\\ACM\\new_glut\\jeans.bmp", 18);
-//	CarregaTextura("D:\\ACM\\new_glut\\sky.bmp", 19);
-//	CarregaTextura("D:\\ACM\\new_glut\\night.bmp", 20);
-//	CarregaTextura("D:\\ACM\\new_glut\\grama.bmp", 21);
-//	CarregaTextura("D:\\ACM\\new_glut\\door1.bmp", 22);
-//	CarregaTextura("D:\\ACM\\new_glut\\door2.bmp", 23);
-//	CarregaTextura("D:\\ACM\\new_glut\\bag.bmp", 24);
 //    inicializaLista(&listaPontos);
 //
 //

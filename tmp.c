@@ -61,42 +61,35 @@ GLfloat obj_Esp[4] = {0.1, 0.1, 0.1, 1.0};
 
 
 /// texture struct
-typedef struct BMPImagem {
+typedef struct IMGdata_ {
     int   width;
     int   height;
     char *data;
-}BMPImage;
+}IMGdata;
 
-void getBitmapImageData( char *pFileName, BMPImage *pImage )
+void getIMGdata( char *pFileName, IMGdata *pImage )
 {
     FILE *pFile = NULL;
     unsigned short nNumPlanes;
     unsigned short nNumBPP;
 	int i;
 
-    if( (pFile = fopen(pFileName, "rb") ) == NULL )
-		printf("ERROR: getBitmapImageData - %s not found.\n", pFileName);
+    ( (pFile = fopen(pFileName, "rb") ) == NULL );
 
     // Seek forward to width and height info
     fseek( pFile, 18, SEEK_CUR );
 
-    if( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 )
-		printf("ERROR: getBitmapImageData - Couldn't read width from %s.\n ", pFileName);
+    ( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 );
 
-    if( (i = fread(&pImage->height, 4, 1, pFile) ) != 1 )
-		printf("ERROR: getBitmapImageData - Couldn't read height from %s.\n ", pFileName);
+     ( (i = fread(&pImage->height, 4, 1, pFile) ) != 1 );
 
-    if( (fread(&nNumPlanes, 2, 1, pFile) ) != 1 )
-		printf("ERROR: getBitmapImageData - Couldn't read plane count from %s.\n", pFileName);
+     ( (fread(&nNumPlanes, 2, 1, pFile) ) != 1 );
 
-    if( nNumPlanes != 1 )
-		printf("ERROR: getBitmapImageData - Plane count from %s.\n ", pFileName);
+     ( nNumPlanes != 1 );
 
-    if( (i = fread(&nNumBPP, 2, 1, pFile)) != 1 )
-		printf( "ERROR: getBitmapImageData - Couldn't read BPP from %s.\n ", pFileName);
+     ( (i = fread(&nNumBPP, 2, 1, pFile)) != 1 );
 
-    if( nNumBPP != 24 )
-		printf("ERROR: getBitmapImageData - BPP from %s.\n ", pFileName);
+     ( nNumBPP != 24 );
 
     fseek( pFile, 24, SEEK_CUR );
 
@@ -104,8 +97,7 @@ void getBitmapImageData( char *pFileName, BMPImage *pImage )
 
     pImage->data = (char*) malloc( nTotalImagesize );
 
-    if( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) != 1 )
-		printf("ERROR: getBitmapImageData - Couldn't read image data from %s.\n ", pFileName);
+     ( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) != 1 );
 
 	char charTemp;
     for( i = 0; i < nTotalImagesize; i += 3 )
@@ -116,12 +108,12 @@ void getBitmapImageData( char *pFileName, BMPImage *pImage )
     }
 }
 
-void CarregaTextura(char* Filename, int id)
+void loadTexture(char* Filename, int id)
 {
 
-    BMPImage textura;
+    IMGdata textura;
 
-    getBitmapImageData( Filename, &textura);
+    getIMGdata( Filename, &textura);
 
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &texture_id[id]);
@@ -686,15 +678,8 @@ void  rightKnee_moving()
     }
 }
 
-
-void playGame(void)	{
-
-     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //	glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
-    glPushMatrix();
-     glTranslatef(0.0, 0.35, 0.0);
-        bigWall();
-       my_man();
+void body_moving()
+{
        head_rotate_();
        rightHand_moving();
        rightElbow_moving();
@@ -704,6 +689,16 @@ void playGame(void)	{
        leftKnee_moving();
        rightLeg_moving();
        rightKnee_moving();
+}
+void playGame(void)	{
+
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //	glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
+    glPushMatrix();
+     glTranslatef(0.0, 0.35, 0.0);
+        bigWall();
+       my_man();
+       body_moving();
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -760,17 +755,6 @@ void keyboard (unsigned char key, int x, int y){
     case '6':
       moveX-= .42;
     break;
-
-    case 'h':
-        rot_head_flag = 1, leftHand_flag = 1;
-        break;
-    case 'z':
-        rightElbow_flag = 1;
-        break;
-    case'x' :
-        head_ang -= .8;
-        head_ang = head_ang< -90 ? -90 : head_ang;
-        break;
    case 'd':
         eye_centerZ -= .1;
         break;
@@ -832,8 +816,8 @@ int  main ( int argc, char** argv ){
 	glutInitWindowSize(600,600);
 	glutCreateWindow("Douglas");
 
-    CarregaTextura("D:\\ACM\\new_glut\\sky.bmp", 0);
-	CarregaTextura("D:\\ACM\\new_glut\\grama.bmp", 21);
+    loadTexture("D:\\ACM\\new_glut\\sky.bmp", 0);
+	loadTexture("D:\\ACM\\new_glut\\grama.bmp", 21);
 
     glutReshapeFunc(ChangeSize);
 
