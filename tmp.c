@@ -10,7 +10,8 @@
 GLuint texture_id[MAX_NO_TEXTURES];
 
 bool head_right_done , head_left_done, rot_head_flag;
-float head_rotate = 0, head_rotval=-1.2 ;
+float rot_speed= 2;
+float head_ang = 0, head_rotval ;
 
 bool   rightHand_up_done ,  rightHand_flag,
        rightElbow_up_done , rightElbow_done,
@@ -20,6 +21,13 @@ bool   rightHand_up_done ,  rightHand_flag,
        rightKnee_up_done, rightKnee_flag,
        leftLeg_up_done , leftLeg_flag,
        leftKnee_up_done, leftKnee_flag ;
+
+float leftHand_ang , leftElbow_ang , rightHand_ang , rightElbow_ang, rightLeg_ang,
+      rightKnee_ang , leftLeg_ang  ,  leftKnee_ang ;
+
+float leftHand_rotVal= 1.2, leftElbow_rotVal= 1.2, rightHand_rotVal= 1.2, rightElbow_rotVal=1.2, rightLeg_rotVal=1.2,
+      rightKnee_rotVal= 1.2, leftLeg_rotVal = 1.2,  leftKnee_rotVal =1.2;
+
 float angle = 45, fAspect, angx = 0, angy = 0, angz = 0,
      moveZ = -5.0, eyeZ = 0.0, eyeX = 0.0,
       eyeY = 0.0,  moveX = 0.0, tamTela = 400.0, eye_centerX = 0.0, eye_centerY = 0.0,
@@ -163,6 +171,10 @@ void ChangeSize(GLsizei w, GLsizei h)	{
 
 void init(void) {
 glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
+
+    leftHand_rotVal= rot_speed, leftElbow_rotVal= rot_speed, rightHand_rotVal= rot_speed, rightElbow_rotVal=rot_speed, rightLeg_rotVal=rot_speed,
+    rightKnee_rotVal= rot_speed, leftLeg_rotVal = rot_speed,  leftKnee_rotVal =rot_speed , head_rotval = rot_speed;
+
     glLoadIdentity();
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse_light );
@@ -309,7 +321,7 @@ void my_man() {
 
         glPushMatrix();  // head
 
-        glRotatef(head_rotate, 0,1,0);
+        glRotatef(head_ang, 0,1,0);
             glPushMatrix();///skull
                 glRotatef(90, 1.0, 0.0, 0.0);
                  glColor3f(234/255.0  , 192/255.0, 134/255.0);
@@ -379,7 +391,7 @@ void my_man() {
             glTranslatef(0.13, 0.18, 0.0);
             glScalef(1.5, 1.5, 1.5);
             glTranslatef(-0.2, -0.4, 0.0);
-            glRotatef(head_rotate, 1.0, 0.0, 0.0);
+            glRotatef(leftHand_ang, 1.0, 0.0, 0.0);
             glRotatef(0, 0.0, 0.0, 1.0);
             glRotatef(20, 0.0, 0.0, 1.0);
             glTranslatef(0.2, 0.4, 0.0);
@@ -411,7 +423,7 @@ void my_man() {
                 glPopMatrix();
                 glPushMatrix(); ///left lower arm
                     glTranslatef(-0.52, -0.72, 0.0);
-                    glRotatef(0, 1.0, 0.0, 0.0);
+                    glRotatef(leftElbow_ang, 1.0, 0.0, 0.0);
                     glRotatef(0, 0.0, 0.0, 1.0);
                     glTranslatef(0.52, 0.72, 0.0);
                     glPushMatrix(); ///left hand
@@ -430,7 +442,7 @@ void my_man() {
             glTranslatef(-0.13, 0.18, 0.0);
             glScalef(1.5, 1.5, 1.5);
             glTranslatef(0.2, -0.4, 0.0);
-            glRotatef(head_rotate, 1.0, 0.0, 0.0);
+            glRotatef(rightHand_ang, 1.0, 0.0, 0.0);
             glRotatef(0, 0.0, 0.0, 1.0);
             glRotatef(-20, 0.0, 0.0, 1.0);
             glTranslatef(-0.2, 0.4, 0.0);
@@ -454,7 +466,7 @@ void my_man() {
                         glTranslatef(0.45, -0.65, 0.0);
                         glRotatef(45, 0.0, 0.0, 1.0);
                         glScalef(0.5, 1.3, 0.8);
-                        glRotatef(90, 1.0, 0.0, 0.0);
+                        glRotatef( rightElbow_ang+ 90, 1.0, 0.0, 0.0);
                         glutSolidCube(0.1 );
                         glColor3f(1,1,1);
                     glPopMatrix();
@@ -481,7 +493,7 @@ void my_man() {
             glTranslatef(0.05, 0.7, 0);
             glScalef(1.6, 1.6, 1.6);
             glTranslatef(-0.03, -1.2, 0.0);
-            glRotatef(0, 1.0, 0.0, 0.0);
+            glRotatef(leftLeg_ang, 1.0, 0.0, 0.0);
             glRotatef(0, 0.0, 0.0, 1.0);
             glTranslatef(0.03, 1.2, 0.0);
             glPushMatrix(); ///left thigh
@@ -502,7 +514,7 @@ void my_man() {
 
                     glTranslatef(-0.1, -1.45, 0.0);
                     glScalef(0.5, 1.3, 1.0);
-                    glRotatef(90, 1.0, 0.0, 0.0);
+                    glRotatef( leftKnee_ang+ 90, 1.0, 0.0, 0.0);
                     glutSolidCube(0.1 );
                     glColor3f(1,1,1);
                 glPopMatrix();
@@ -559,6 +571,39 @@ void my_man() {
 
 }
 
+void head_rotate_()
+{
+
+    if(rot_head_flag){
+        head_ang+= head_rotval;
+        if(head_ang <= -90)
+            head_rotval *=-1 , head_left_done =1;
+        if(head_ang >= 90)
+            head_rotval *=-1, head_right_done =1 ;
+        if( abs(head_ang - 0) <=1 && head_left_done && head_right_done)
+        {
+            head_left_done = head_right_done = 0;
+            rot_head_flag = 0;
+
+        }
+    }
+}
+
+void  rightHand_moving()
+{
+    if(rightHand_flag)
+    {
+        rightHand_ang+= rightHand_rotVal;
+        if(rightHand_ang >= 60 || rightHand_ang <= -60)
+            rightHand_rotVal*=-1 , rightHand_up_done = 1;
+        if(abs(rightHand_ang - 0)<=1 && rightHand_up_done)
+            rightHand_up_done = 0, rightHand_ang = 0 ,rightHand_flag =0 , rightHand_rotVal *=-1;
+        printf("%d\n", rightHand_up_done);
+    }
+}
+
+
+
 
 
 void playGame(void)	{
@@ -570,29 +615,10 @@ void playGame(void)	{
         bigWall();
        my_man();
        head_rotate_();
+       rightHand_moving();
     glPopMatrix();
     glutSwapBuffers();
 }
-void head_rotate_()
-{
-
-    if(rot_head_flag){
-        head_rotate+= head_rotval;
-        if(head_rotate <= -90)
-            head_rotval *=-1 , head_left_done =1;
-        if(head_rotate >= 90)
-            head_rotval *=-1, head_right_done =1 ;
-        if( abs(head_rotate - 0) <=1 && head_left_done && head_right_done)
-        {
-            head_left_done = head_right_done = 0;
-            rot_head_flag = 0;
-
-        }
-    }
-}
-
-
-
 
 void keyboard (unsigned char key, int x, int y){
   switch (key) {
@@ -610,15 +636,15 @@ void keyboard (unsigned char key, int x, int y){
     break;
 
     case 'h':
-        rot_head_flag = 1;
+        rot_head_flag = 1, rightHand_flag = 1;
         break;
     case 'z':
-        head_rotate+=.8;
-        head_rotate  = head_rotate > 90 ? 90 : head_rotate;
+        head_ang+=.8;
+        head_ang  = head_ang > 90 ? 90 : head_ang;
         break;
     case'x' :
-        head_rotate -= .8;
-        head_rotate = head_rotate< -90 ? -90 : head_rotate;
+        head_ang -= .8;
+        head_ang = head_ang< -90 ? -90 : head_ang;
         break;
    case 'd':
         eye_centerZ -= .1;
