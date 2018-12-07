@@ -25,7 +25,7 @@
 //
 //}; typedef struct elemento tipoElemento;
 //
-///*Lista de pontos*/
+//////Lista de pontos
 //struct listaDE {
 //
 //    tipoElemento *primeiro;
@@ -87,9 +87,9 @@
 //
 //
 //
-/////Rotinas de Lista///
+//////Rotinas de Lista///
 //
-///*Inicia a lista de pontos*/
+//////Inicia a lista de pontos
 //void inicializaLista (tipoLDE *listaAux){
 //
 //    listaAux->primeiro = NULL;
@@ -97,7 +97,7 @@
 //    listaAux->tamanhoLista = 0;
 //}
 //
-///*Insere um elemento na lista*/
+//////Insere um elemento na lista
 //void insereElementoFim(tipoLDE *listaAux, float x, float z,
 //int flagNeedMoveBack, int flagNeedMoveLeft, int flagNeedMoveOn, int flagNeedMoveRight, int isCesta) {
 //
@@ -116,7 +116,7 @@
 //    novoElem->isCesta = isCesta;
 //
 //
-//    //Atualiza lista conforme seu tamanho
+/////    Atualiza lista conforme seu tamanho
 //    if (listaAux->tamanhoLista == 0){
 //        novoElem->prox = NULL;
 //        listaAux->primeiro= novoElem;
@@ -128,12 +128,12 @@
 //    listaAux->ultimo->prox = novoElem;
 //    listaAux->ultimo= novoElem;
 //    }
-//    //Atualiza tamanho da lista
+////    Atualiza tamanho da lista
 //    listaAux->tamanhoLista++;
 //}
 //
-/////Rotinhas de textura///
-///*Le uma img BMP conforme visto em aula*/
+///////Rotinhas de textura///
+/////Le uma img BMP conforme visto em aula
 //void getBitmapImageData( char *pFileName, BMPImage *pImage )
 //{
 //    FILE *pFile = NULL;
@@ -144,7 +144,7 @@
 //    if( (pFile = fopen(pFileName, "rb") ) == NULL )
 //		printf("ERROR: getBitmapImageData - %s not found.\n", pFileName);
 //
-//    // Seek forward to width and height info
+////     Seek forward to width and height info
 //    fseek( pFile, 18, SEEK_CUR );
 //
 //    if( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 )
@@ -183,7 +183,7 @@
 //    }
 //}
 //
-///*Carrega uma textura e computa seu ID em um vetor de ID*/
+////Carrega uma textura e computa seu ID em um vetor de ID
 //void CarregaTextura(char* Filename, int id)
 //{
 //
@@ -194,7 +194,7 @@
 //    glEnable(GL_TEXTURE_2D);
 //    glGenTextures(1, &texture_id[id]);
 //
-////    glBindTexture(GL_TEXTURE_2D, texture_id[id]);
+//    glBindTexture(GL_TEXTURE_2D, texture_id[id]);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -298,8 +298,8 @@
 //
 //
 //void drawHuman() {
-// ///Humano//
-//  //   glColor3f(0.0, 0.0, 1.0);
+//// /Humano//
+//     glColor3f(0.0, 0.0, 1.0);
 //    glPushMatrix();
 //        glTranslatef(moveX, -1.0, moveZ);
 //        glRotatef(angx,1.0,0.0,0.0);
@@ -308,18 +308,18 @@
 //        glScalef(1.2, 0.7, 0.4);
 //
 //
-//        ///Cabeca///
+////        /Cabeca///
 //
 //        glPushMatrix();
 //
 //glRotatef(head_rotate, 0,1,0);
 //            glPushMatrix();// /head
 //
-////            glEnable(GL_TEXTURE_GEN_T);
-////            glEnable(GL_TEXTURE_GEN_S);
+//            glEnable(GL_TEXTURE_GEN_T);
+//            glEnable(GL_TEXTURE_GEN_S);
 //            glEnable(GL_TEXTURE_2D);
 //
-//           // glBindTexture(GL_TEXTURE_2D, texture_id[0]);
+//            glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 //
 //
 //
@@ -328,8 +328,8 @@
 //            glutSolidCube(0.3 );
 //            glColor3f(1,1,1);
 //            glDisable(GL_TEXTURE_2D);
-////            glDisable(GL_TEXTURE_GEN_S);
-////            glDisable(GL_TEXTURE_GEN_T);
+//            glDisable(GL_TEXTURE_GEN_S);
+//            glDisable(GL_TEXTURE_GEN_T);
 //
 //            glPopMatrix();
 //
@@ -374,7 +374,7 @@
 //
 //
 //        glPopMatrix(); ///Fecha cabeca
-//        ///Pescoco///
+////        /Pescoco///
 //        glPushMatrix(); ///mouth
 //            glColor3f(.7,0,0);
 //            glTranslatef(0.0, -0.25, 0.0);
@@ -383,7 +383,7 @@
 //            gluCylinder(gluNewQuadric(), 0.5, 0.3, 0.3, 20,10);
 //            glColor3f(1,1,1);
 //        glPopMatrix();
-//        ///body///
+////        /body///
 //        glPushMatrix();
 //            glColor3f(17/255.0  , 53/255.0, 114/255.0);
 //            glTranslatef(0.0, -0.75, 0.0);
@@ -392,7 +392,7 @@
 //            glutSolidCube(0.4 );
 //            glColor3f(1,1,1);
 //        glPopMatrix();
-//        ///left arm///
+////        /left arm///
 //        glPushMatrix();
 //            glTranslatef(0.13, 0.18, 0.0);
 //            glScalef(1.5, 1.5, 1.5);
@@ -494,7 +494,7 @@
 //                    glPopMatrix();
 //                glPopMatrix();
 //        glPopMatrix();
-//        ///Left leg//
+////        /Left leg//
 //        glPushMatrix(); ///open leg
 //            glTranslatef(0.05, 0.7, tLegL);
 //            glScalef(1.6, 1.6, 1.6);
@@ -534,7 +534,7 @@
 //                glPopMatrix();
 //            glPopMatrix();
 //        glPopMatrix();
-//        ///right leg//
+////        /right leg//
 //        glPushMatrix();
 //            glTranslatef(-0.05, 0.7, tLegR);
 //            glScalef(1.6, 1.6, 1.6);
@@ -584,7 +584,7 @@
 //glPushMatrix(); ///Abre gato
 //
 //        glEnable(GL_TEXTURE_2D);
-//       // glBindTexture(GL_TEXTURE_2D, texture_id[6]);
+//        glBindTexture(GL_TEXTURE_2D, texture_id[6]);
 //
 //        glPushMatrix(); ///Abre Cabeca
 //            glScalef(0.6, 0.6, 0.6);
@@ -666,13 +666,13 @@
 //        glPopMatrix();
 //        glPushMatrix();
 //         glEnable(GL_TEXTURE_2D);
-//        // glBindTexture(GL_TEXTURE_2D, texture_id[22]);
+//         glBindTexture(GL_TEXTURE_2D, texture_id[22]);
 //            glTranslatef(-0.2, -0.6, 1.0);
 //            glScalef(0.4, 0.8, 0.0);
 //            glutSolidCube(1.0);
 //        glPopMatrix();
 //        glEnable(GL_TEXTURE_2D);
-////        glBindTexture(GL_TEXTURE_2D, texture_id[4]);
+//        glBindTexture(GL_TEXTURE_2D, texture_id[4]);
 //        glPushMatrix(); ///T1
 //            glTranslatef(-0.45, 0.0, 0.0);
 //            glRotatef(20, 0.0, 0.0, 1.0);
@@ -689,7 +689,7 @@
 //        glDisable(GL_TEXTURE_2D);
 //        glPushMatrix(); ///Baixo
 //      glEnable(GL_TEXTURE_2D);
-//    //    glBindTexture(GL_TEXTURE_2D, texture_id[10]);
+//        glBindTexture(GL_TEXTURE_2D, texture_id[10]);
 //            glTranslatef(0.0, -0.5, 0.0);
 //            glScalef(1.0, 1.0, 2.0);
 //            glutSolidCube(1.0);
@@ -707,7 +707,7 @@
 //
 //void cesta() {
 //    glEnable(GL_TEXTURE_2D);
-////    glBindTexture(GL_TEXTURE_2D, texture_id[17]);
+//    glBindTexture(GL_TEXTURE_2D, texture_id[17]);
 //    glPushMatrix();
 //        glScalef(0.5, 0.5, 0.5);
 //        glRotatef(90, 1.0, 0.0, 0.0);
@@ -721,14 +721,14 @@
 //
 //    glPushMatrix();
 //        glEnable(GL_TEXTURE_2D);
-////        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
+//        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 //        glTranslatef(-3.0, 1.0, -30);
 //        glScalef(5.0, 5.0, 1.0);
 //        glutSolidCube(1.0);
 //        glDisable(GL_TEXTURE_2D);
 //    glPopMatrix();
 //    glEnable(GL_TEXTURE_2D);
-////    glBindTexture(GL_TEXTURE_2D, texture_id[21]);
+//    glBindTexture(GL_TEXTURE_2D, texture_id[21]);
 //    glPushMatrix();
 //        glTranslatef(4.7, -2.0, -5.0);
 //        glScalef(50.0, 0.1, 100.0);
@@ -744,7 +744,6 @@
 //void playGame(void)	{
 //
 //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
 //     bigWall();
 //
 //    glPushMatrix();
@@ -759,7 +758,7 @@
 //
 //
 //    if(flagDrawCat == 1 && flagFinaliza == 0) {
-//       /*Redesenha os pontos*/
+////       Redesenha os pontos
 //        if(r != NULL) {
 //            if(r->isCesta == 0) {
 //
@@ -942,7 +941,7 @@
 //
 //
 //
-///*Movimeta partes do corpo separadamente*/
+////Movimeta partes do corpo separadamente
 //if(flagShoulderR == 1) {
 //        if(rotateShoulderRX < 60)
 //            rotateShoulderRX += 5;
@@ -1126,7 +1125,7 @@
 //         srand( (unsigned)time(NULL) );
 //         srand( (unsigned)time(NULL) );
 //         srand( (unsigned)time(NULL) );
-//         float z = (rand()%3500);
+//         float z = (rand()%350);
 //         z = (z/100);
 //         if(z > 0)
 //            z = -z;
@@ -1261,8 +1260,8 @@
 //            flagZoom = 0;
 //            break;
 //        case 14:
-//         //   flagMoveR = 1;
-//          //  flagLegRGo = 1;
+////            flagMoveR = 1;
+////            flagLegRGo = 1;
 //            break;
 //
 //    }

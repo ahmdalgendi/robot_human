@@ -5,14 +5,18 @@
 #include<stdbool.h>
 #include <math.h>
 #include <time.h>
-#define MAX_NO_TEXTURES 25 //Definindo o numero maximo de texturas
+#define MAX_NO_TEXTURES 25
+
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
 bool head_right_done , head_left_done, rot_head_flag;
 float rot_speed= 2;
-float head_ang = 0, head_rotval ;
+float head_ang = 0, head_rotval, body_rotate ;
+bool walkX , walkZ;
+// glTranslatef(-3 + objectX, -5,30+objectZ);
 
+float objectX = 5, objectZ= 30;
 bool   rightHand_up_done = 0 ,  rightHand_flag = 0,
        rightElbow_up_done=0 , rightElbow_flag=0,
        leftHand_up_done=0, leftHand_flag=0,
@@ -27,14 +31,17 @@ float leftHand_ang , leftElbow_ang , rightHand_ang , rightElbow_ang, rightLeg_an
 
 float leftHand_rotVal= 1.2, leftElbow_rotVal= 1.2, rightHand_rotVal= 1.2, rightElbow_rotVal=1.2, rightLeg_rotVal=1.2,
       rightKnee_rotVal= 1.2, leftLeg_rotVal = 1.2,  leftKnee_rotVal =1.2;
-
-float angle = 45, fAspect, angx = 0, angy = 0, angz = 0,
-     moveZ = -5.0, eyeZ = 0.0, eyeX = 0.0,
+int angy;
+float angle = 80, fAspect, angx = 0,  angz = 0,
+     moveZ = 0 , eyeZ = 0.0, eyeX = 0.0,
       eyeY = 0.0,  moveX = 0.0, tamTela = 400.0, eye_centerX = 0.0, eye_centerY = 0.0,
-      eye_centerZ = 0.0;
-
-
-
+      eye_centerZ =0.0;
+bool object_flag;
+int number_of_music ;
+ typedef struct music_box{
+    double x;
+    double z;
+}music ;
 GLfloat ambient_light2[4] = {0.4, 0.4, 0.4, 1.0};
 GLfloat ambient_light[4] = {0.0, 0.0, 0.0, 1.0};
 
@@ -137,15 +144,15 @@ void loadTexture(char* Filename, int id)
 void Viewing()	{
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-    gluPerspective(angle,fAspect,0.1,800);
+    gluPerspective(angle,fAspect,0.001,80);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 
-    gluLookAt( eyeX,eyeY,eyeZ -10,
+    gluLookAt( eyeX-1,eyeY+2,eyeZ -5,
                eye_centerX,eye_centerY,eye_centerZ,
-               0,1,0);
-
+                  0,1,0);
+    //glTranslatef(eyeX, eyeY, eyeZ);
 }
 
 void ChangeSize(GLsizei w, GLsizei h)	{
@@ -161,7 +168,7 @@ void ChangeSize(GLsizei w, GLsizei h)	{
 
 
 
-void init(void) {
+void init() {
 glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
 
     leftHand_rotVal= rot_speed, leftElbow_rotVal= rot_speed, rightHand_rotVal= rot_speed, rightElbow_rotVal=rot_speed, rightLeg_rotVal=rot_speed,
@@ -217,13 +224,29 @@ glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
 
+    Viewing();
+
 }
 
 
+void music_box_draw()
+{
+    if(object_flag){
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_id[1]);
+    glScalef(0.2,.2,.2);
+    glTranslatef( objectX, -5,objectZ);
+    glutSolidCube(2);
+    glDisable(GL_TEXTURE_2D);
 
+    glPopMatrix();
+    }
+}
 
 void bigWall() {
-
+glPushMatrix();
+    glTranslatef(0,.6,0);
     glPushMatrix();
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texture_id[0]);
@@ -295,18 +318,25 @@ void bigWall() {
         glRotatef(90, 1.0, 0.0, 0.0);
         glutSolidCube(1.0);
     glPopMatrix();
+    glPopMatrix();
 glDisable(GL_TEXTURE_2D);
 }
-
+/*
+    body function
+**/
 void my_man() {
 
   //   glColor3f(0.0, 0.0, 1.0);
+
+
     glPushMatrix();
-        glTranslatef(moveX, -0.55, moveZ);
+    //glLoadIdentity();
+    glTranslatef(moveX, 0, moveZ);
         glRotatef(angx,1.0,0.0,0.0);
         glRotatef(angy,0.0,1.0,0.0);
         glRotatef(angz,0.0,0.0,1.0);
         glScalef(1.2, 0.7, 0.4);
+
 
 
         ///HEAD///
@@ -387,9 +417,7 @@ void my_man() {
             glRotatef(0, 0.0, 0.0, 1.0);
             glRotatef(20, 0.0, 0.0, 1.0);
             glTranslatef(0.2, 0.4, 0.0);
-
             glPushMatrix();
-
                 glColor3f(17/255.0  , 53/255.0, 114/255.0);
                 glTranslatef(-0.3, -0.5, 0.0);
                 glRotatef(-45, 0.0, 0.0, 1.0);
@@ -558,10 +586,12 @@ void my_man() {
             glColor3f(1,1,1);
             glPopMatrix();
         glPopMatrix();
+            glPopMatrix();
 
     glPopMatrix();
 
 }
+
 
 void head_rotate_()
 {
@@ -635,7 +665,7 @@ void  leftLeg_moving()
     if(leftLeg_flag)
     {
         leftLeg_ang+= leftLeg_rotVal;
-        if(leftLeg_ang >= 80 || leftLeg_ang <= -80)
+        if(leftLeg_ang >= 60 || leftLeg_ang <= -60)
             leftLeg_rotVal*=-1 , leftLeg_up_done = 1;
         if(abs(leftLeg_ang - 0)<=1 && leftLeg_up_done)
             leftLeg_up_done = 0, leftLeg_ang = 0 ,leftLeg_flag =0 , leftLeg_rotVal *=-1;
@@ -659,7 +689,7 @@ void  rightLeg_moving()
     if(rightLeg_flag)
     {
         rightLeg_ang+= rightLeg_rotVal;
-        if(rightLeg_ang >= 80 || rightLeg_ang <= -80)
+        if(rightLeg_ang >= 60 || rightLeg_ang <= -60)
             rightLeg_rotVal*=-1 , rightLeg_up_done = 1;
         if(abs(rightLeg_ang - 0)<=1 && rightLeg_up_done)
             rightLeg_up_done = 0, rightLeg_ang = 0 ,rightLeg_flag =0 , rightLeg_rotVal *=-1;
@@ -678,8 +708,27 @@ void  rightKnee_moving()
     }
 }
 
+void body_walk()
+{
+    if(walkX)
+        {
+            if( objectX - moveX > 0 )
+                moveX+=.009 ;
+            else moveX -= 0.009;
+        }
+    else if (walkZ)
+    {
+        if( objectZ - moveZ > 0 )
+                moveZ+=.009 ;
+            else moveZ -= 0.009;
+    }
+
+}
+
+
 void body_moving()
 {
+        goto_box();
        head_rotate_();
        rightHand_moving();
        rightElbow_moving();
@@ -689,17 +738,135 @@ void body_moving()
        leftKnee_moving();
        rightLeg_moving();
        rightKnee_moving();
+       body_walk();
+       if(body_rotate)
+       {
+           angy+=1;
+           if((int) angy%90 == 0)
+            body_rotate = 0;
+       angy = (int)angy %360;
+       }
 }
-void playGame(void)	{
+void rotate_body()
+{
+    body_rotate = 1;
+    leftHand_flag = leftLeg_flag =1;
+
+}
+
+void moving()
+{
+bool legleftmp , rightlegtmp ;
+    //legleftmp = leftLeg_flag, rightlegtmp = rightLeg_flag;
+    if(walkX || walkZ)
+    {
+         legleftmp = leftLeg_flag, rightlegtmp = rightLeg_flag;
+    }
+    body_moving();
+    if( (walkX||walkZ) && (legleftmp != leftLeg_flag || rightlegtmp != rightLeg_flag))
+    {
+        if(legleftmp != leftLeg_flag)
+            rightLeg_flag = rightHand_flag= !rightLeg_flag;
+        else leftHand_flag = leftLeg_flag = !leftLeg_flag;
+    }
+}
+void start_walk()
+{
+    leftHand_flag = 1;
+    leftLeg_flag = 1 ;
+}
+void stop_walking()
+{
+
+    walkX=walkZ=0;
+}
+bool xdirection_ok()
+{
+    if(moveX< objectX)
+    {
+        return angy == 270 ;
+    }
+    else if (moveX > objectX)
+    {
+        return angy == 90 ;
+    }
+}
+bool zdirection_ok()
+{
+    if(moveZ > objectZ)
+    {
+
+        return angy == 0;
+    }
+    else if (moveZ < objectZ)
+        return angy == 180 ;
+}
+int u ;
+void goto_box()
+{
+
+    if(object_flag)
+    {
+        if( abs(moveX - objectX)  > 3 )
+        {
+
+
+            if(xdirection_ok()==0)
+            {
+                rotate_body();
+                // makethe robot face the right direction
+            }
+            else
+            {
+
+                walkX=1;
+                start_walk();
+                // start the walk in
+            }
+        }
+        else if (abs(moveZ-objectZ) > 24)
+        {
+            walkX = 0;
+            if(zdirection_ok()==0)
+            {
+                rotate_body();
+
+            }
+            else{
+                    printf("%f  %f\n", moveZ, objectZ);
+                    walkZ =1 ;
+            }       start_walk();
+        }
+        else{
+            /*
+                call the dancing func , make object disapper , go back to 0,0
+            */
+                walkZ = 0;
+            stop_walking();
+        }
+    }
+}
+void playGame()	{
 
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //	glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
+
     glPushMatrix();
-     glTranslatef(0.0, 0.35, 0.0);
-        bigWall();
-       my_man();
-       body_moving();
+//
+      // glTranslatef(0.0, 0.35, 0.0);
+     glPushMatrix();
+     bigWall();
+     glPopMatrix();
+     glPushMatrix();
+     my_man();
+
     glPopMatrix();
+
+       moving();
+    glPopMatrix();
+
+    music_box_draw();
+    Viewing();
     glutSwapBuffers();
 }
 
@@ -793,9 +960,18 @@ void keyboard (unsigned char key, int x, int y){
     case 'k':
         eyeY -= 0.1;
         break;
+    case 'z':
+       rightLeg_flag=1;
+        break;
+    case 'v':
+       object_flag= 1;
+        break;
+
+
 
 }
 
+    printf("x = %f z = %f\n", moveX, moveZ);
 
 Viewing();
 glutPostRedisplay();
@@ -803,9 +979,9 @@ glutPostRedisplay();
 
 
 
-void Timer(int extra) {
+void Timer(int time_) {
      glutPostRedisplay();
-     glutTimerFunc(20,Timer,10);
+     glutTimerFunc(20,Timer,1);
 }
 
 
@@ -817,7 +993,9 @@ int  main ( int argc, char** argv ){
 	glutCreateWindow("Douglas");
 
     loadTexture("D:\\ACM\\new_glut\\sky.bmp", 0);
-	loadTexture("D:\\ACM\\new_glut\\grama.bmp", 21);
+    loadTexture("D:\\ACM\\new_glut\\disco.bmp", 1);
+
+    loadTexture("D:\\ACM\\new_glut\\grama.bmp", 21);
 
     glutReshapeFunc(ChangeSize);
 
@@ -826,19 +1004,21 @@ int  main ( int argc, char** argv ){
 	glutDisplayFunc(playGame);
     glutKeyboardFunc(keyboard);
     glutCreateMenu(menuFunc);
+        glutAddMenuEntry("head", 10);
+        glutAddMenuEntry("Right Arm", 2);
+         glutAddMenuEntry("Right Elbow", 5);
+        glutAddMenuEntry("right Leg", 7);
+
+        glutAddMenuEntry("right Knee", 9);
+        glutAddMenuEntry("left Arm", 3) ;
+        glutAddMenuEntry("Left Elbow", 4);
+
+        glutAddMenuEntry("Left Leg", 6);
+        glutAddMenuEntry("Left Knee", 8);
         glutAddMenuEntry("Exit", 1);
-        glutAddMenuEntry("Rotate Right Arm", 2);
-        glutAddMenuEntry("Rotate left Arm", 3) ;
-        glutAddMenuEntry("Rotate Left Elbow", 4);
-        glutAddMenuEntry("Rotating Right Elbow", 5);
-        glutAddMenuEntry("Rotate Left Leg", 6);
-        glutAddMenuEntry("Rotate right Leg", 7);
-        glutAddMenuEntry("Rotate Left Knee", 8);
-        glutAddMenuEntry("Rotate right Knee", 9);
-        glutAddMenuEntry("Rotate head", 10);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
-    glutTimerFunc(0,Timer,10);
+    glutTimerFunc(0,Timer,1);
 	glutMainLoop();
 
 }
