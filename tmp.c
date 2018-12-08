@@ -5,6 +5,7 @@
 #include<stdbool.h>
 #include <math.h>
 #include <time.h>
+
 #define MAX_NO_TEXTURES 25
 
 
@@ -13,10 +14,10 @@ GLuint texture_id[MAX_NO_TEXTURES];
 bool head_right_done , head_left_done, rot_head_flag;
 float rot_speed= 2;
 float head_ang = 0, head_rotval, body_rotate ;
-bool walkX , walkZ;
+bool walkX , walkZ, goingHome;
 // glTranslatef(-3 + objectX, -5,30+objectZ);
 
-float objectX = 5, objectZ= 30;
+float objectX = 1, objectZ= 1;
 bool   rightHand_up_done = 0 ,  rightHand_flag = 0,
        rightElbow_up_done=0 , rightElbow_flag=0,
        leftHand_up_done=0, leftHand_flag=0,
@@ -42,6 +43,13 @@ int number_of_music ;
     double x;
     double z;
 }music ;
+float absf(float x)
+{
+
+    if (x<0)
+        return x*-1;
+    return x;
+}
 GLfloat ambient_light2[4] = {0.4, 0.4, 0.4, 1.0};
 GLfloat ambient_light[4] = {0.0, 0.0, 0.0, 1.0};
 
@@ -65,7 +73,11 @@ GLfloat light_pos4[4] = {0.0, 1.0, -5.0, 1.0};
 GLfloat obj_Amb[4] = {0.3, 0.2, 0.1, 1.0};
 GLfloat obj_Dif[4] = {0.2, 0.2, 0.2, 1.0};
 GLfloat obj_Esp[4] = {0.1, 0.1, 0.1, 1.0};
-
+typedef struct object_ {
+    int   x;
+    int   y;
+   struct object_ * next;
+}object;
 
 /// texture struct
 typedef struct IMGdata_ {
@@ -235,8 +247,8 @@ void music_box_draw()
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_id[1]);
-    glScalef(0.2,.2,.2);
-    glTranslatef( objectX, -5,objectZ);
+    glTranslatef( objectX,0-0.8,objectZ);
+        glScalef(0.2,.2,.2);
     glutSolidCube(2);
     glDisable(GL_TEXTURE_2D);
 
@@ -246,6 +258,8 @@ void music_box_draw()
 
 void bigWall() {
 glPushMatrix();
+
+
     glTranslatef(0,.6,0);
     glPushMatrix();
         glEnable(GL_TEXTURE_2D);
@@ -331,6 +345,7 @@ void my_man() {
 
     glPushMatrix();
     //glLoadIdentity();
+
     glTranslatef(moveX, 0, moveZ);
         glRotatef(angx,1.0,0.0,0.0);
         glRotatef(angy,0.0,1.0,0.0);
@@ -602,7 +617,7 @@ void head_rotate_()
             head_rotval *=-1 , head_left_done =1;
         if(head_ang >= 90)
             head_rotval *=-1, head_right_done =1 ;
-        if( abs(head_ang - 0) <=1 && head_left_done && head_right_done)
+        if( absf(head_ang - 0) <=1 && head_left_done && head_right_done)
         {
             head_left_done = head_right_done = 0;
             rot_head_flag = 0;
@@ -618,7 +633,7 @@ void  rightHand_moving()
         rightHand_ang+= rightHand_rotVal;
         if(rightHand_ang >= 60 || rightHand_ang <= -60)
             rightHand_rotVal*=-1 , rightHand_up_done = 1;
-        if(abs(rightHand_ang - 0)<=1 && rightHand_up_done)
+        if(absf(rightHand_ang - 0)<=1 && rightHand_up_done)
             rightHand_up_done = 0, rightHand_ang = 0 ,rightHand_flag =0 , rightHand_rotVal *=-1;
     }
 }
@@ -630,7 +645,7 @@ void  rightElbow_moving()
         rightElbow_ang+= rightElbow_rotVal;
         if(rightElbow_ang >= 80 || rightElbow_ang <= -80)
             rightElbow_rotVal*=-1 , rightElbow_up_done = 1;
-        if(abs(rightElbow_ang - 0)<=1 && rightElbow_up_done)
+        if(absf(rightElbow_ang - 0)<=1 && rightElbow_up_done)
             rightElbow_up_done = 0, rightElbow_ang = 0 ,rightElbow_flag =0 , rightElbow_rotVal *=-1;
     }
 }
@@ -643,7 +658,7 @@ void  leftHand_moving()
         leftHand_ang+= leftHand_rotVal;
         if(leftHand_ang >= 60 || leftHand_ang <= -60)
             leftHand_rotVal*=-1 , leftHand_up_done = 1;
-        if(abs(leftHand_ang - 0)<=1 && leftHand_up_done)
+        if(absf(leftHand_ang - 0)<=1 && leftHand_up_done)
             leftHand_up_done = 0, leftHand_ang = 0 ,leftHand_flag =0 , leftHand_rotVal *=-1;
     }
 }
@@ -655,7 +670,7 @@ void  leftElbow_moving()
         leftElbow_ang+= leftElbow_rotVal;
         if(leftElbow_ang >= 80 || leftElbow_ang <= -80)
             leftElbow_rotVal*=-1 , leftElbow_up_done = 1;
-        if(abs(leftElbow_ang - 0)<=1 && leftElbow_up_done)
+        if(absf(leftElbow_ang - 0)<=1 && leftElbow_up_done)
             leftElbow_up_done = 0, leftElbow_ang = 0 ,leftElbow_flag =0 , leftElbow_rotVal *=-1;
     }
 }
@@ -667,7 +682,7 @@ void  leftLeg_moving()
         leftLeg_ang+= leftLeg_rotVal;
         if(leftLeg_ang >= 60 || leftLeg_ang <= -60)
             leftLeg_rotVal*=-1 , leftLeg_up_done = 1;
-        if(abs(leftLeg_ang - 0)<=1 && leftLeg_up_done)
+        if(absf(leftLeg_ang - 0)<=1 && leftLeg_up_done)
             leftLeg_up_done = 0, leftLeg_ang = 0 ,leftLeg_flag =0 , leftLeg_rotVal *=-1;
     }
 }
@@ -679,7 +694,7 @@ void  leftKnee_moving()
         leftKnee_ang+= leftKnee_rotVal;
         if(leftKnee_ang >= 80 || leftKnee_ang <= -80)
             leftKnee_rotVal*=-1 , leftKnee_up_done = 1;
-        if(abs(leftKnee_ang - 0)<=1 && leftKnee_up_done)
+        if(absf(leftKnee_ang - 0)<=1 && leftKnee_up_done)
             leftKnee_up_done = 0, leftKnee_ang = 0 ,leftKnee_flag =0 , leftKnee_rotVal *=-1;
     }
 }
@@ -691,7 +706,7 @@ void  rightLeg_moving()
         rightLeg_ang+= rightLeg_rotVal;
         if(rightLeg_ang >= 60 || rightLeg_ang <= -60)
             rightLeg_rotVal*=-1 , rightLeg_up_done = 1;
-        if(abs(rightLeg_ang - 0)<=1 && rightLeg_up_done)
+        if(absf(rightLeg_ang - 0)<=1 && rightLeg_up_done)
             rightLeg_up_done = 0, rightLeg_ang = 0 ,rightLeg_flag =0 , rightLeg_rotVal *=-1;
     }
 }
@@ -703,7 +718,7 @@ void  rightKnee_moving()
         rightKnee_ang+= rightKnee_rotVal;
         if(rightKnee_ang >= 80 || rightKnee_ang <= -80)
             rightKnee_rotVal*=-1 , rightKnee_up_done = 1;
-        if(abs(rightKnee_ang - 0)<=1 && rightKnee_up_done)
+        if(absf(rightKnee_ang - 0)<=1 && rightKnee_up_done)
             rightKnee_up_done = 0, rightKnee_ang = 0 ,rightKnee_flag =0 , rightKnee_rotVal *=-1;
     }
 }
@@ -712,13 +727,26 @@ void body_walk()
 {
     if(walkX)
         {
-            if( objectX - moveX > 0 )
+            if(goingHome)
+            {
+            if( 0 - moveX > 0 )
+                moveX+=.009 ;
+            else moveX -= 0.009;
+            }
+
+            else if( objectX - moveX > 0 )
                 moveX+=.009 ;
             else moveX -= 0.009;
         }
     else if (walkZ)
     {
-        if( objectZ - moveZ > 0 )
+        if(goingHome)
+        {
+            if( 0 - moveZ > 0 )
+                moveZ+=.009 ;
+            else moveZ -= 0.009;
+        }
+        else if( objectZ - moveZ > 0 )
                 moveZ+=.009 ;
             else moveZ -= 0.009;
     }
@@ -728,7 +756,8 @@ void body_walk()
 
 void body_moving()
 {
-        goto_box();
+       goto_box();
+       goToZero();
        head_rotate_();
        rightHand_moving();
        rightElbow_moving();
@@ -746,6 +775,7 @@ void body_moving()
             body_rotate = 0;
        angy = (int)angy %360;
        }
+       dance();
 }
 void rotate_body()
 {
@@ -767,13 +797,14 @@ bool legleftmp , rightlegtmp ;
     {
         if(legleftmp != leftLeg_flag)
             rightLeg_flag = rightHand_flag= !rightLeg_flag;
-        else leftHand_flag = leftLeg_flag = !leftLeg_flag;
+        else if(rightlegtmp != rightLeg_flag)
+            leftHand_flag = leftLeg_flag = !leftLeg_flag;
     }
 }
 void start_walk()
 {
-    leftHand_flag = 1;
-    leftLeg_flag = 1 ;
+    rightHand_flag = 1;
+    rightLeg_flag = 1 ;
 }
 void stop_walking()
 {
@@ -802,16 +833,37 @@ bool zdirection_ok()
         return angy == 180 ;
 }
 int u ;
-void goto_box()
-{
 
-    if(object_flag)
+bool xdirection_okz()
+{
+    if(moveX< 0)
     {
-        if( abs(moveX - objectX)  > 3 )
+        return angy == 270 ;
+    }
+    else if (moveX > 0)
+    {
+        return angy == 90 ;
+    }
+}
+bool zdirection_okz()
+{
+    if(moveZ > 0)
+    {
+
+        return angy == 0;
+    }
+    else if (moveZ < 0)
+        return angy == 180 ;
+}
+void goToZero()
+{
+     if(goingHome)
+    {
+        if( absf(moveX - 0)  > .001 )
         {
 
 
-            if(xdirection_ok()==0)
+            if(xdirection_okz()==0  )
             {
                 rotate_body();
                 // makethe robot face the right direction
@@ -819,30 +871,130 @@ void goto_box()
             else
             {
 
-                walkX=1;
-                start_walk();
-                // start the walk in
+                    if(walkX==0)
+                        start_walk(), walkX = 1;
+                        // start the walk in
             }
         }
-        else if (abs(moveZ-objectZ) > 24)
+        else if (absf(moveZ-0) >.001 )
         {
-            walkX = 0;
-            if(zdirection_ok()==0)
+            if(walkX)
+                stop_walking();
+            if(zdirection_okz()==0)
             {
                 rotate_body();
 
             }
             else{
-                    printf("%f  %f\n", moveZ, objectZ);
+
+                    if(walkZ ==0)
+                  start_walk();
                     walkZ =1 ;
-            }       start_walk();
+
+            }
         }
         else{
             /*
                 call the dancing func , make object disapper , go back to 0,0
             */
-                walkZ = 0;
+            walkZ = 0;
             stop_walking();
+
+           goingHome = 0;
+        }
+    }
+}
+int dancing, doneflag;
+void dance()
+{
+    if(dancing== 5)
+    {
+        rightHand_flag = 1;
+        if(rightHand_up_done== 1)
+            dancing --;
+    }
+    else if (dancing ==4)
+    {
+        leftLeg_flag =2;
+        if(leftLeg_up_done == 1)
+            dancing -- ;
+    }
+    else if (dancing==3)
+    {
+        rightLeg_flag=1;
+        if(rightLeg_up_done == 1)
+            dancing--;
+    }
+    else if (dancing==2)
+    {
+        leftLeg_flag =1;
+        if(leftLeg_up_done)
+            dancing--;
+    }
+    else if(dancing==1)
+    {
+        rot_head_flag = 1;
+        leftElbow_flag=1;
+        rightElbow_flag= 1;
+        if(rightElbow_up_done)
+        dancing = -1;
+    }
+    else if (dancing == -1)
+    {
+        leftElbow_flag=1;
+        rightElbow_flag= 1;
+        dancing= 0;
+    }
+}
+void goto_box()
+{
+
+    if(object_flag)
+    {
+        if( absf(moveX - objectX) >0.009 )
+        {
+
+
+            if(xdirection_ok()==0  )
+            {
+                rotate_body();
+                // makethe robot face the right direction
+            }
+            else
+            {
+
+                    if(walkX==0)
+                        start_walk(), walkX = 1;
+                        // start the walk in
+            }
+        }
+        else if (absf(moveZ-objectZ) >.01)
+        {
+            if(walkX)
+                stop_walking();
+            if(zdirection_ok()==0)
+            {
+                printf("%f, %f\n", moveZ , objectZ);
+                rotate_body();
+
+            }
+            else{
+
+                    if(walkZ ==0)
+                  start_walk();
+                    walkZ =1 ;
+
+            }
+        }
+        else{
+            /*
+                call the dancing func , make object disapper , go back to 0,0
+            */
+            printf("%f %f\n", moveX, objectX);
+            walkZ = 0;
+            stop_walking();
+            object_flag = 0;
+            dancing = 5;
         }
     }
 }
@@ -854,18 +1006,11 @@ void playGame()	{
     glPushMatrix();
 //
       // glTranslatef(0.0, 0.35, 0.0);
-     glPushMatrix();
      bigWall();
-     glPopMatrix();
-     glPushMatrix();
      my_man();
 
-    glPopMatrix();
-
-       moving();
-    glPopMatrix();
-
     music_box_draw();
+    moving();
     Viewing();
     glutSwapBuffers();
 }
@@ -903,6 +1048,9 @@ void menuFunc(GLint test)
             break;
         case 10:
             rot_head_flag = 1;
+            break;
+        case 20:
+            dancing =5;
             break;
     }
 
@@ -961,7 +1109,8 @@ void keyboard (unsigned char key, int x, int y){
         eyeY -= 0.1;
         break;
     case 'z':
-       rightLeg_flag=1;
+        goingHome = 1;
+        object_flag=0;
         break;
     case 'v':
        object_flag= 1;
@@ -970,8 +1119,7 @@ void keyboard (unsigned char key, int x, int y){
 
 
 }
-
-    printf("x = %f z = %f\n", moveX, moveZ);
+printf("%d\n", object_flag);
 
 Viewing();
 glutPostRedisplay();
@@ -1007,14 +1155,16 @@ int  main ( int argc, char** argv ){
         glutAddMenuEntry("head", 10);
         glutAddMenuEntry("Right Arm", 2);
          glutAddMenuEntry("Right Elbow", 5);
-        glutAddMenuEntry("right Leg", 7);
+        glutAddMenuEntry("Right Leg", 7);
 
-        glutAddMenuEntry("right Knee", 9);
+        glutAddMenuEntry("Right Knee", 9);
         glutAddMenuEntry("left Arm", 3) ;
         glutAddMenuEntry("Left Elbow", 4);
 
         glutAddMenuEntry("Left Leg", 6);
         glutAddMenuEntry("Left Knee", 8);
+        glutAddMenuEntry("Dance", 20);
+
         glutAddMenuEntry("Exit", 1);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
