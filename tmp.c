@@ -5,17 +5,18 @@
 #include<stdbool.h>
 #include <math.h>
 #include <time.h>
-
+#include"list.h"
 #define MAX_NO_TEXTURES 25
 
 
 GLuint texture_id[MAX_NO_TEXTURES];
-
+circ_bbuf_t list ;
 bool head_right_done , head_left_done, rot_head_flag;
 float rot_speed= 2;
 float head_ang = 0, head_rotval, body_rotate ;
 bool walkX , walkZ, goingHome;
 // glTranslatef(-3 + objectX, -5,30+objectZ);
+int dancing, doneflag;
 
 float objectX = 1, objectZ= 1;
 bool   rightHand_up_done = 0 ,  rightHand_flag = 0,
@@ -39,10 +40,7 @@ float angle = 80, fAspect, angx = 0,  angz = 0,
       eye_centerZ =0.0;
 bool object_flag;
 int number_of_music ;
- typedef struct music_box{
-    double x;
-    double z;
-}music ;
+
 float absf(float x)
 {
 
@@ -50,34 +48,31 @@ float absf(float x)
         return x*-1;
     return x;
 }
+/* generate a random floating point number from min to max */
+
+double randfrom(double min, double max)
+{
+    double range = (max - min);
+    double div = RAND_MAX / range;
+    return min + (rand() / div);
+}
 GLfloat ambient_light2[4] = {0.4, 0.4, 0.4, 1.0};
-GLfloat ambient_light[4] = {0.0, 0.0, 0.0, 1.0};
 
 GLfloat difuse_light[4] = {0.2, 0.2, 0.2, 1.0};
 GLfloat dspec_light[4] = {0.3, 0.3, 0.3, 1.0};
 
-GLfloat light_pos0[4] = {2.0, 4.0, -5.0, 1.0};
-GLfloat light_dir0[4] = {-2.0, -4.0, -5.0, 1.0};
 
-GLfloat light_pos1[4] = {-2.0, 4.0, -3.0, 1.0};
-GLfloat light_dir1[4] = {3.0, -5.0, -3.0, 1.0};
-
-GLfloat light_pos2[4] = {-2.0, 4.0, -12.0, 1.0};
-GLfloat light_dir2[4] = {3.0, -5.0, -12.0, 1.0};
-
-GLfloat light_pos3[4] = {2.0, 4.0, -18.0, 1.0};
-GLfloat light_dir3[4] = {-2.0, -4.0, -18.0, 1.0};
 
 GLfloat light_pos4[4] = {0.0, 1.0, -5.0, 1.0};
 
 GLfloat obj_Amb[4] = {0.3, 0.2, 0.1, 1.0};
 GLfloat obj_Dif[4] = {0.2, 0.2, 0.2, 1.0};
 GLfloat obj_Esp[4] = {0.1, 0.1, 0.1, 1.0};
-typedef struct object_ {
-    int   x;
-    int   y;
-   struct object_ * next;
-}object;
+
+
+
+
+
 
 /// texture struct
 typedef struct IMGdata_ {
@@ -93,22 +88,20 @@ void getIMGdata( char *pFileName, IMGdata *pImage )
     unsigned short nNumBPP;
 	int i;
 
-    ( (pFile = fopen(pFileName, "rb") ) == NULL );
+    ( (pFile = fopen(pFileName, "rb") )  );
 
     // Seek forward to width and height info
     fseek( pFile, 18, SEEK_CUR );
 
-    ( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 );
+    ( (i = fread(&pImage->width, 4, 1, pFile) )  );
 
-     ( (i = fread(&pImage->height, 4, 1, pFile) ) != 1 );
+     ( (i = fread(&pImage->height, 4, 1, pFile) ) );
 
-     ( (fread(&nNumPlanes, 2, 1, pFile) ) != 1 );
+     ( (fread(&nNumPlanes, 2, 1, pFile) ) );
 
-     ( nNumPlanes != 1 );
 
-     ( (i = fread(&nNumBPP, 2, 1, pFile)) != 1 );
+     ( (i = fread(&nNumBPP, 2, 1, pFile)) );
 
-     ( nNumBPP != 24 );
 
     fseek( pFile, 24, SEEK_CUR );
 
@@ -116,7 +109,7 @@ void getIMGdata( char *pFileName, IMGdata *pImage )
 
     pImage->data = (char*) malloc( nTotalImagesize );
 
-     ( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) != 1 );
+     ( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) );
 
 	char charTemp;
     for( i = 0; i < nTotalImagesize; i += 3 )
@@ -138,7 +131,7 @@ void loadTexture(char* Filename, int id)
     glGenTextures(1, &texture_id[id]);
 
     glBindTexture(GL_TEXTURE_2D, texture_id[id]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -185,39 +178,8 @@ glClearColor(141/255.0f, 131/255.0, 122/255.0, 1.0f);
 
     leftHand_rotVal= rot_speed, leftElbow_rotVal= rot_speed, rightHand_rotVal= rot_speed, rightElbow_rotVal=rot_speed, rightLeg_rotVal=rot_speed,
     rightKnee_rotVal= - rot_speed, leftLeg_rotVal = rot_speed,  leftKnee_rotVal = -rot_speed , head_rotval = rot_speed;
-
+    init_buf(&list);
     glLoadIdentity();
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse_light );
-    glLightfv(GL_LIGHT0, GL_SPECULAR, dspec_light );
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos0 );
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_dir0);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 80.0);
-    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 40.0);
-
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, difuse_light );
-    glLightfv(GL_LIGHT1, GL_SPECULAR, dspec_light );
-    glLightfv(GL_LIGHT1, GL_POSITION, light_pos1 );
-    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light_dir1);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 80.0);
-    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 20.0);
-
-    glLightfv(GL_LIGHT2, GL_AMBIENT, ambient_light);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, difuse_light );
-    glLightfv(GL_LIGHT2, GL_SPECULAR, dspec_light );
-    glLightfv(GL_LIGHT2, GL_POSITION, light_pos2);
-    glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, light_dir2);
-    glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 80.0);
-    glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 40.0);
-
-    glLightfv(GL_LIGHT3, GL_AMBIENT, ambient_light);
-    glLightfv(GL_LIGHT3, GL_DIFFUSE, difuse_light );
-    glLightfv(GL_LIGHT3, GL_SPECULAR, dspec_light );
-    glLightfv(GL_LIGHT3, GL_POSITION, light_pos3);
-    glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, light_dir3);
-    glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, 80.0);
-    glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, 40.0);
 
     glLightfv(GL_LIGHT4, GL_AMBIENT, ambient_light2);
     glLightfv(GL_LIGHT4, GL_DIFFUSE, difuse_light);
@@ -248,7 +210,7 @@ void music_box_draw()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_id[1]);
     glTranslatef( objectX,0-0.8,objectZ);
-        glScalef(0.2,.2,.2);
+    glScalef(0.2,.2,.2);
     glutSolidCube(2);
     glDisable(GL_TEXTURE_2D);
 
@@ -264,7 +226,6 @@ glPushMatrix();
     glPushMatrix();
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texture_id[0]);
-
         glTranslatef(-3.0, 1.0, 50);
         glScalef(500.0, 100.0, 1.0);
         glutSolidCube(1.0);
@@ -346,7 +307,7 @@ void my_man() {
     glPushMatrix();
     //glLoadIdentity();
 
-    glTranslatef(moveX, 0, moveZ);
+        glTranslatef(moveX, 0, moveZ); // translating the whoole man
         glRotatef(angx,1.0,0.0,0.0);
         glRotatef(angy,0.0,1.0,0.0);
         glRotatef(angz,0.0,0.0,1.0);
@@ -758,6 +719,7 @@ void body_moving()
 {
        goto_box();
        goToZero();
+
        head_rotate_();
        rightHand_moving();
        rightElbow_moving();
@@ -767,13 +729,17 @@ void body_moving()
        leftKnee_moving();
        rightLeg_moving();
        rightKnee_moving();
+       if(dancing == 0)
+       {
+
        body_walk();
        if(body_rotate)
        {
            angy+=1;
            if((int) angy%90 == 0)
             body_rotate = 0;
-       angy = (int)angy %360;
+       angy = (int)angy %360; // [0-359]
+       }
        }
        dance();
 }
@@ -813,7 +779,7 @@ void stop_walking()
 }
 bool xdirection_ok()
 {
-    if(moveX< objectX)
+    if(moveX < objectX)
     {
         return angy == 270 ;
     }
@@ -844,6 +810,7 @@ bool xdirection_okz()
     {
         return angy == 90 ;
     }
+
 }
 bool zdirection_okz()
 {
@@ -904,7 +871,6 @@ void goToZero()
         }
     }
 }
-int dancing, doneflag;
 void dance()
 {
     if(dancing== 5)
@@ -915,7 +881,7 @@ void dance()
     }
     else if (dancing ==4)
     {
-        leftLeg_flag =2;
+        leftLeg_flag =1;
         if(leftLeg_up_done == 1)
             dancing -- ;
     }
@@ -990,11 +956,19 @@ void goto_box()
             /*
                 call the dancing func , make object disapper , go back to 0,0
             */
-            printf("%f %f\n", moveX, objectX);
             walkZ = 0;
             stop_walking();
-            object_flag = 0;
             dancing = 5;
+            music tmp;
+            if(list.count)
+            {
+                object_flag =1;
+                cir_buf_pop(&list, &tmp);
+                objectX = tmp.x;
+                objectZ = tmp.z ;
+            }
+            else
+                object_flag = 0 ;
         }
     }
 }
@@ -1119,10 +1093,34 @@ void keyboard (unsigned char key, int x, int y){
 
 
 }
-printf("%d\n", object_flag);
 
 Viewing();
 glutPostRedisplay();
+}
+void MouseInt (int botao, int estado, int coorX, int coorY) {
+
+    switch(botao) {
+        case GLUT_LEFT_BUTTON:
+        if(estado == GLUT_DOWN) {
+
+           // 25 + ( std::rand() % ( 63 - 25 + 1 ) )
+            if(object_flag)
+            {
+                music tmp ;
+                tmp.x = randfrom(-1.6, 1.6);
+                tmp.z = randfrom(0,8);
+                if(list.count < max_buf)
+                cir_buf_push(&list , tmp);
+            }
+            else{
+                object_flag = 1;
+                objectX = randfrom(-1.6, 1.6);
+                objectZ = randfrom(0,10);
+            }
+        }
+
+
+    }
 }
 
 
@@ -1151,6 +1149,8 @@ int  main ( int argc, char** argv ){
 	init();
 	glutDisplayFunc(playGame);
     glutKeyboardFunc(keyboard);
+        glutMouseFunc(MouseInt);
+
     glutCreateMenu(menuFunc);
         glutAddMenuEntry("head", 10);
         glutAddMenuEntry("Right Arm", 2);
@@ -1170,5 +1170,5 @@ int  main ( int argc, char** argv ){
     glutAttachMenu(GLUT_RIGHT_BUTTON);
     glutTimerFunc(0,Timer,1);
 	glutMainLoop();
-
+return 0;
 }

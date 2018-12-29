@@ -1111,7 +1111,7 @@
 //
 //    switch(botao) {
 //        case GLUT_LEFT_BUTTON:
-//        if(estado == GLUT_DOWN) {
+//        if(1||estado == GLUT_DOWN) {
 //
 //         srand( (unsigned)time(NULL) );
 //         srand( (unsigned)time(NULL) );

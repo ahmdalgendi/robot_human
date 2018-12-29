@@ -55,16 +55,14 @@
 		<Unit filename="door1.bmp" />
 		<Unit filename="door2.bmp" />
 		<Unit filename="grama.bmp" />
-		<Unit filename="human.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="jeans.bmp" />
 		<Unit filename="lightpole (1).bmp" />
 		<Unit filename="lightpole (2).bmp" />
 		<Unit filename="lightpole.bmp" />
-		<Unit filename="main.c">
+		<Unit filename="list.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="list.h" />
 		<Unit filename="night.bmp" />
 		<Unit filename="palha.bmp" />
 		<Unit filename="roof1.bmp" />
